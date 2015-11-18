@@ -280,7 +280,7 @@ regexp: true, indent: 2, maxerr: 50 */
 
     // TIP: We'll return a new function that delegates to the old one, but only
     // if it hasn't been called before.
-    return function() {
+    return function () {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
         // infromation from one function call to another.
@@ -300,7 +300,16 @@ regexp: true, indent: 2, maxerr: 50 */
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = function(func) {
+  _.memoize = function (func) {
+    var results = {};
+
+    return function () {
+      var arg = JSON.stringify(arguments);
+      if (!results[arg]) {
+        results[arg] = func.apply(this, arguments);
+      }
+      return results[arg];
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
