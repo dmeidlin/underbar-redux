@@ -318,7 +318,11 @@ regexp: true, indent: 2, maxerr: 50 */
   // The arguments for the original function are passed after the wait
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
-  _.delay = function(func, wait) {
+  _.delay = function (func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    setTimeout(function () {
+      func.apply(null, args);
+    }, wait);
   };
 
 
@@ -332,7 +336,27 @@ regexp: true, indent: 2, maxerr: 50 */
   // TIP: This function's test suite will ask that you not modify the original
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
-  _.shuffle = function(array) {
+  _.shuffle = function (array) {
+    var workingCopy = [];
+    var randomizedArray = [];
+    var index;
+    var leftSplit = [];
+    var rightSplit = [];
+    var i;
+    var size;
+
+    workingCopy = array;
+    size = array.length;
+
+    for (i = 0; i < size; i++) {
+      index = Math.floor((Math.random() * workingCopy.length));
+      randomizedArray.push(workingCopy[index]);
+      leftSplit = workingCopy.slice(0, index);
+      rightSplit = workingCopy.slice(index + 1, workingCopy.length);
+      workingCopy = leftSplit.concat(rightSplit);
+    }
+
+    return randomizedArray;
   };
 
 
