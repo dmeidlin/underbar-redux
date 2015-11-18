@@ -213,6 +213,10 @@ regexp: true, indent: 2, maxerr: 50 */
   // provided, provide a default one
   _.some = function (collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, function (trueSoFar, element) {
+      return trueSoFar || iterator(element);
+    }, false);
   };
 
 
@@ -234,12 +238,26 @@ regexp: true, indent: 2, maxerr: 50 */
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
+  _.extend = function (obj) {
+    _.each(arguments, function (source) {
+      _.each(source, function (value, key) {
+        obj[key] = value;
+      });
+    });
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
-  _.defaults = function(obj) {
+  _.defaults = function (obj) {
+    _.each(arguments, function (source) {
+      _.each(source, function (value, key) {
+        if (obj[key] === undefined) {
+          obj[key] = value;
+        }
+      });
+    });
+    return obj;
   };
 
 
@@ -253,7 +271,7 @@ regexp: true, indent: 2, maxerr: 50 */
 
   // Return a function that can be called at most one time. Subsequent calls
   // should return the previously returned value.
-  _.once = function(func) {
+  _.once = function (func) {
     // TIP: These variables are stored in a "closure scope" (worth researching),
     // so that they'll remain available to the newly-generated function every
     // time it's called.
